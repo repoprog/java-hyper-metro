@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String filePath = "C:\\Users\\repo\\Desktop\\prague.json" ; // args[0];
+        String filePath = args[0];
         Metro metro = new Metro();
         metro.readStationsFile(filePath);
         boolean quit = false;
