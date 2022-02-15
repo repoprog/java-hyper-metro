@@ -42,6 +42,21 @@ class Station {
         this.transfer = new ArrayList<>();
     }
 
+    static class Transfer {
+        private String line;
+        private String station;
+
+        public Transfer(String line, String station) {
+            this.line = line;
+            this.station = station;
+        }
+
+        @Override
+        public String toString() {
+            return " - " + station + " (" + line + " line)";
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -58,20 +73,6 @@ class Station {
     }
 }
 
-class Transfer {
-    private String line;
-    private String station;
-
-    public Transfer(String line, String station) {
-        this.line = line;
-        this.station = station;
-    }
-
-    @Override
-    public String toString() {
-        return " - " + station + " (" + line + " line)";
-    }
-}
 
 public class Metro {
 
@@ -130,8 +131,8 @@ public class Metro {
     }
 
     public void connectStations(String fromLine, String fromStation, String toLine, String toStation) {
-        getLine(fromLine).getStation(fromStation).setTransfer(new Transfer(toLine, toStation));
-        getLine(toLine).getStation(toStation).setTransfer(new Transfer(fromLine, toStation));
+        getLine(fromLine).getStation(fromStation).setTransfer(new Station.Transfer(toLine, toStation));
+        getLine(toLine).getStation(toStation).setTransfer(new Station.Transfer(fromLine, toStation));
     }
 
     public void printLine(String lineName) {
