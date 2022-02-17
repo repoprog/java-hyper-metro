@@ -2,59 +2,72 @@
   "SubwayLink": {
     "1": {
       "name": "Owings Mills",
-      "transfer": []
+      "transfer": [],
+      "time": 2
     },
     "2": {
       "name": "Old Court",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "3": {
       "name": "Milford Mill",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "4": {
       "name": "Reiserstown Plaza",
-      "transfer": []
+      "transfer": [],
+      "time": 3
     },
     "5": {
       "name": "Rogers Avenue",
-      "transfer": []
+      "transfer": [],
+      "time": 2
     },
     "6": {
       "name": "West Cold Spring",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "7": {
       "name": "Mondawmin",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "8": {
       "name": "Penn North",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "9": {
       "name": "Uptown",
-      "transfer": []
+      "transfer": [],
+      "time": 7
     },
     "10": {
       "name": "State Center",
-      "transfer": []
+      "transfer": [],
+      "time": 3
     },
     "11": {
       "name": "Lexington Market",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "12": {
       "name": "Charles Center",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "13": {
       "name": "Shot Tower/Market Place",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "14": {
       "name": "Johns Hopkins Hospital",
-      "transfer": []
+      "transfer": [], "time": null
     }
   }
 }

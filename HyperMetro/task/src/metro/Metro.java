@@ -15,6 +15,7 @@ class Line {
     private String name;
     private Station station;
     public LinkedList<Station> stationsList;
+    boolean transChecked = false;
 
     public Line(String name) {
         this.name = name;
@@ -31,6 +32,35 @@ class Line {
                 .findAny()
                 .orElse(null);
     }
+
+    public List<Station> getNeighbors(Station station) {
+        List<Station> neighbors = new ArrayList<>();
+        int index = stationsList.indexOf(station);
+        ListIterator<Station> li = stationsList.listIterator(index);
+        if (li.hasPrevious()) {
+            neighbors.add(li.previous());
+            li.next(); // move iterator to current
+        }
+        li.next(); // move iterator to next
+        if (li.hasNext()) {
+            neighbors.add(li.next());
+        }
+        if (station.getTransfer().size() != 0 && !transChecked) {
+            String transLineName = station.getTransfer().get(0).getLine();
+            String transStationName = station.getTransfer().get(0).getStation();
+            Line transLine = Metro.getLinesList().stream()
+                    .filter(l -> l.getName().equals(transLineName))
+                    .findAny()
+                    .orElse(null);
+
+            transChecked = true;
+            List<Station> trStation = transLine.getNeighbors(transLine.getStation(transStationName));
+            neighbors.addAll(trStation);
+        }
+
+        System.out.println(" - Neighbours : " + neighbors);
+        return neighbors;
+    }
 }
 
 class Station {
@@ -46,15 +76,20 @@ class Station {
         return name;
     }
 
+    public List<Transfer> getTransfer() {
+        return transfer;
+    }
+
     public void setTransfer(Transfer transition) {
         transfer.add(transition);
     }
 
     @Override
     public String toString() {
-        if (transfer.size() != 0) {
-            return name + transfer.get(0);
-        } else return name;
+//        if (transfer.size() != 0) {
+//            return name + transfer.get(0);
+//        } else
+            return name;
     }
 }
 
@@ -67,6 +102,14 @@ class Transfer {
         this.station = station;
     }
 
+    public String getLine() {
+        return line;
+    }
+
+    public String getStation() {
+        return station;
+    }
+
     @Override
     public String toString() {
         return " - " + station + " (" + line + " line)";
@@ -76,10 +119,14 @@ class Transfer {
 public class Metro {
 
     private Map<String, Map<Integer, Station>> linesMap;
-    private List<Line> linesList;
+    private static List<Line> linesList;
 
     public Metro() {
         this.linesMap = new HashMap<>();
+    }
+
+    public static List<Line> getLinesList() {
+        return linesList;
     }
 
     public void readStationsFile(String filePath) {
@@ -116,29 +163,31 @@ public class Metro {
                 .orElse(null);
     }
 
-    public void addStationToLine(String lineName, String station) {
-        getLine(lineName).stationsList.addLast(new Station(station));
+
+    public void addStationToLine(String lineName, String stationName) {
+        getLine(lineName).stationsList.addLast(new Station(stationName));
     }
 
-    public void addStationToLineHead(String lineName, String station) {
-        getLine(lineName).stationsList.addFirst(new Station(station));
+    public void addStationToLineHead(String lineName, String stationName) {
+        getLine(lineName).stationsList.addFirst(new Station(stationName));
     }
 
-    public void removeStationFromLine(String lineName, String station) {
+    public void removeStationFromLine(String lineName, String stationName) {
         Line line = getLine(lineName);
-        line.stationsList.remove(line.getStation(station));
+        line.stationsList.remove(line.getStation(stationName));
     }
 
-    public void connectStations(String fromLine, String fromStation, String toLine, String toStation) {
-        getLine(fromLine).getStation(fromStation).setTransfer(new Transfer(toLine, toStation));
-        getLine(toLine).getStation(toStation).setTransfer(new Transfer(fromLine, toStation));
+    public void connectStations(String l1, String s1, String l2, String s2) {
+        getLine(l1).getStation(s1).setTransfer(new Transfer(l2, s2));
+        getLine(l2).getStation(s2).setTransfer(new Transfer(l1, s2));
     }
 
     public void printLine(String lineName) {
         Line line = getLine(lineName);
         System.out.println("depot");
         for (int i = 0; i < line.stationsList.size(); i++) {
-            System.out.println(line.stationsList.get(i));
+            System.out.print(line.stationsList.get(i));
+            line.getNeighbors(line.stationsList.get(i));
         }
         System.out.println("depot");
     }
