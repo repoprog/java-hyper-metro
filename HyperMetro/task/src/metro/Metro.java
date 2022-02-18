@@ -15,7 +15,6 @@ class Line {
     private String name;
     private Station station;
     public LinkedList<Station> stationsList;
-    boolean transChecked = false;
 
     public Line(String name) {
         this.name = name;
@@ -33,33 +32,8 @@ class Line {
                 .orElse(null);
     }
 
-    public List<Station> getNeighbors(Station station) {
-        List<Station> neighbors = new ArrayList<>();
-        int index = stationsList.indexOf(station);
-        ListIterator<Station> li = stationsList.listIterator(index);
-        if (li.hasPrevious()) {
-            neighbors.add(li.previous());
-            li.next(); // move iterator to current
-        }
-        li.next(); // move iterator to next
-        if (li.hasNext()) {
-            neighbors.add(li.next());
-        }
-        if (station.getTransfer().size() != 0 && !transChecked) {
-            String transLineName = station.getTransfer().get(0).getLine();
-            String transStationName = station.getTransfer().get(0).getStation();
-            Line transLine = Metro.getLinesList().stream()
-                    .filter(l -> l.getName().equals(transLineName))
-                    .findAny()
-                    .orElse(null);
-
-            transChecked = true;
-            List<Station> trStation = transLine.getNeighbors(transLine.getStation(transStationName));
-            neighbors.addAll(trStation);
-        }
-
-        System.out.println(" - Neighbours : " + neighbors);
-        return neighbors;
+    public LinkedList<Station> getStationsList() {
+        return stationsList;
     }
 }
 
@@ -80,13 +54,17 @@ class Station {
         return transfer;
     }
 
+    public boolean hasTransfer() {
+        return transfer.size() !=0;
+    }
+
     public void setTransfer(Transfer transition) {
         transfer.add(transition);
     }
 
     @Override
     public String toString() {
-//        if (transfer.size() != 0) {
+//        if (hasTransfer()) {
 //            return name + transfer.get(0);
 //        } else
             return name;
@@ -120,14 +98,56 @@ public class Metro {
 
     private Map<String, Map<Integer, Station>> linesMap;
     private static List<Line> linesList;
+    List<Station> transChecked;
 
     public Metro() {
         this.linesMap = new HashMap<>();
+        this.transChecked = new ArrayList<>();
     }
 
     public static List<Line> getLinesList() {
         return linesList;
     }
+
+    public List<Station> getNeighbors(Station station, Line line) {
+        List<Station> neighbors = new ArrayList<>();
+        int index = line.getStationsList().indexOf(station);
+        ListIterator<Station> li = line.getStationsList().listIterator(index);
+        if (li.hasPrevious()) {
+            neighbors.add(li.previous());
+            li.next(); // move iterator to current
+        }
+        li.next(); // move iterator to next
+        if (li.hasNext()) {
+            neighbors.add(li.next());
+        }
+        if (station.hasTransfer() && !transChecked.contains(station)) {
+            neighbors.addAll(getTransferNeighbors(station));
+        }
+        return neighbors;
+    }
+
+    public List<Station> getTransferNeighbors(Station station) {
+        List<Station> neighbors = new ArrayList<>();
+        String transLineName = station.getTransfer().get(0).getLine();
+        String transStationName = station.getTransfer().get(0).getStation();
+        Line transLine = getLine(transLineName);
+        Station transStation = transLine.getStation(transStationName);
+        transChecked.add(station);
+
+        int index = transLine.stationsList.indexOf(transStation);
+        ListIterator<Station> li = transLine.stationsList.listIterator(index);
+        if (li.hasPrevious()) {
+            neighbors.add(li.previous());
+            li.next(); // move iterator to current
+        }
+        li.next(); // move iterator to next
+        if (li.hasNext()) {
+            neighbors.add(li.next());
+        }
+        return neighbors;
+    }
+
 
     public void readStationsFile(String filePath) {
         Type type = new TypeToken<HashMap<String, HashMap<Integer, Station>>>() {
@@ -187,7 +207,7 @@ public class Metro {
         System.out.println("depot");
         for (int i = 0; i < line.stationsList.size(); i++) {
             System.out.print(line.stationsList.get(i));
-            line.getNeighbors(line.stationsList.get(i));
+//            System.out.println(" - Neighbours: " + getNeighbors(line.getStationsList().get(i)));
         }
         System.out.println("depot");
     }

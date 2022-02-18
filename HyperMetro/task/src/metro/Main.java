@@ -10,6 +10,9 @@ public class Main {
         String filePath = "C:\\Users\\repo\\Desktop\\prague.json"; //args[0];
         Metro metro = new Metro();
         metro.readStationsFile(filePath);
+        Graph graph = new Graph(metro);
+        graph.createAdj();
+        graph.bfsOfGraph("Linka-A", "Petriny");
         boolean quit = false;
         while (!quit) {
             List<String> commands = ParseUtil.parseInput(scanner.nextLine().trim());
