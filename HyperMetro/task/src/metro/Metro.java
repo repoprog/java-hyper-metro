@@ -13,7 +13,6 @@ import java.util.*;
 
 class Line {
     private String name;
-    private Station station;
     public LinkedList<Station> stationsList;
 
     public Line(String name) {
@@ -41,6 +40,7 @@ class Station {
     private String name;
     private List<Transfer> transfer;
 
+
     public Station(String name) {
         this.name = name;
         this.transfer = new ArrayList<>();
@@ -55,7 +55,7 @@ class Station {
     }
 
     public boolean hasTransfer() {
-        return transfer.size() !=0;
+        return transfer.size() != 0;
     }
 
     public void setTransfer(Transfer transition) {
@@ -64,9 +64,9 @@ class Station {
 
     @Override
     public String toString() {
-//        if (hasTransfer()) {
-//            return name + transfer.get(0);
-//        } else
+        if (hasTransfer()) {
+            return name + transfer.get(0);
+        } else
             return name;
     }
 }
@@ -121,33 +121,17 @@ public class Metro {
         if (li.hasNext()) {
             neighbors.add(li.next());
         }
+        // recursively get neighbours of transfer station
         if (station.hasTransfer() && !transChecked.contains(station)) {
-            neighbors.addAll(getTransferNeighbors(station));
+            String transLineName = station.getTransfer().get(0).getLine();
+            String transStationName = station.getTransfer().get(0).getStation();
+            Line transLine = getLine(transLineName);
+            Station transStation = transLine.getStation(transStationName);
+            transChecked.add(transStation);
+            neighbors.addAll(getNeighbors(transStation, transLine));
         }
         return neighbors;
     }
-
-    public List<Station> getTransferNeighbors(Station station) {
-        List<Station> neighbors = new ArrayList<>();
-        String transLineName = station.getTransfer().get(0).getLine();
-        String transStationName = station.getTransfer().get(0).getStation();
-        Line transLine = getLine(transLineName);
-        Station transStation = transLine.getStation(transStationName);
-        transChecked.add(station);
-
-        int index = transLine.stationsList.indexOf(transStation);
-        ListIterator<Station> li = transLine.stationsList.listIterator(index);
-        if (li.hasPrevious()) {
-            neighbors.add(li.previous());
-            li.next(); // move iterator to current
-        }
-        li.next(); // move iterator to next
-        if (li.hasNext()) {
-            neighbors.add(li.next());
-        }
-        return neighbors;
-    }
-
 
     public void readStationsFile(String filePath) {
         Type type = new TypeToken<HashMap<String, HashMap<Integer, Station>>>() {
@@ -202,12 +186,16 @@ public class Metro {
         getLine(l2).getStation(s2).setTransfer(new Transfer(l1, s2));
     }
 
+    public void route(String fromLine, String startStation, String toLine, String endStation) {
+        Graph graph = new Graph(this);
+        graph.bfsOfGraph(fromLine, startStation, toLine, endStation);
+    }
+
     public void printLine(String lineName) {
         Line line = getLine(lineName);
         System.out.println("depot");
         for (int i = 0; i < line.stationsList.size(); i++) {
-            System.out.print(line.stationsList.get(i));
-//            System.out.println(" - Neighbours: " + getNeighbors(line.getStationsList().get(i)));
+            System.out.println(line.stationsList.get(i));
         }
         System.out.println("depot");
     }

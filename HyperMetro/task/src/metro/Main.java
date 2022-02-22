@@ -7,12 +7,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String filePath = "C:\\Users\\repo\\Desktop\\prague.json"; //args[0];
+        String filePath = args[0];
         Metro metro = new Metro();
         metro.readStationsFile(filePath);
-        Graph graph = new Graph(metro);
-        graph.createAdj();
-        graph.bfsOfGraph("Linka-A", "Petriny");
         boolean quit = false;
         while (!quit) {
             List<String> commands = ParseUtil.parseInput(scanner.nextLine().trim());
@@ -23,6 +20,8 @@ public class Main {
                 case "/remove" -> metro.removeStationFromLine(commands.get(1), commands.get(2));
                 case "/output" -> metro.printLine(commands.get(1));
                 case "/connect" -> metro.connectStations(commands.get(1), commands.get(2),
+                        commands.get(3), commands.get(4));
+                case "/route" -> metro.route(commands.get(1), commands.get(2),
                         commands.get(3), commands.get(4));
                 default -> System.out.println("Invalid command");
             }
