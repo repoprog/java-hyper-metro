@@ -2,121 +2,150 @@
   "m1": {
     "1": {
       "name": "Renes—Gare",
-      "transfer": []
+      "transfer": [],
+      "time": 3
     },
     "2": {
       "name": "Epenex",
-      "transfer": []
+      "transfer": [],
+      "time": 2
     },
     "3": {
       "name": "Crochy",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "4": {
       "name": "Cerisaie",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "5": {
       "name": "Bassenges",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "6": {
       "name": "EPFL",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "7": {
       "name": "UNL—Sorge",
-      "transfer": []
+      "transfer": [],
+      "time": 8
     },
     "8": {
       "name": "Mouline",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "9": {
       "name": "UNL—Chemberonne",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "10": {
       "name": "Bourdonnette",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "11": {
       "name": "Melley",
-      "transfer": []
+      "transfer": [],
+      "time": 7
     },
     "12": {
       "name": "Provence",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "13": {
       "name": "Montelly",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "14": {
       "name": "Vigie",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "15": {
       "name": "Lausanne—Flon",
-      "transfer": []
+      "transfer": [],
+      "time": null
     }
   },
   "m2": {
     "1": {
       "name": "Croisettes",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "2": {
       "name": "Vennes",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "3": {
       "name": "Fourmi",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "4": {
       "name": "Sallaz",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "5": {
       "name": "CHUV",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "6": {
       "name": "Ours",
-      "transfer": []
+      "transfer": [],
+      "time": 3
     },
     "7": {
       "name": "Riponne M.Bejart",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "8": {
       "name": "Bessieres",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "9": {
       "name": "Lausanne—Flon",
-      "transfer": []
+      "transfer": [],
+      "time": 5
     },
     "10": {
       "name": "Lausanne Gare CFF",
-      "transfer": []
+      "transfer": [],
+      "time": 3
     },
     "11": {
       "name": "Grancy",
-      "transfer": []
+      "transfer": [],
+      "time": 4
     },
     "12": {
       "name": "Delices",
-      "transfer": []
+      "transfer": [],
+      "time": 6
     },
     "13": {
       "name": "Jourdils",
-      "transfer": []
+      "transfer": [],
+      "time": 3
     },
     "14": {
       "name": "Ouchy—Olympique",
-      "transfer": []
+      "transfer": [],
+      "time": null
     }
   }
 }

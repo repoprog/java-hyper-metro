@@ -39,11 +39,13 @@ class Line {
 class Station {
     private String name;
     private List<Transfer> transfer;
+    private Integer time;
 
 
-    public Station(String name) {
+    public Station(String name, Integer time) {
         this.name = name;
         this.transfer = new ArrayList<>();
+        this.time = time;
     }
 
     public String getName() {
@@ -168,12 +170,12 @@ public class Metro {
     }
 
 
-    public void addStationToLine(String lineName, String stationName) {
-        getLine(lineName).stationsList.addLast(new Station(stationName));
+    public void addStationToLine(String lineName, String stationName, String time) {
+        getLine(lineName).stationsList.addLast(new Station(stationName, Integer.parseInt(time)));
     }
 
-    public void addStationToLineHead(String lineName, String stationName) {
-        getLine(lineName).stationsList.addFirst(new Station(stationName));
+    public void addStationToLineHead(String lineName, String stationName, String time) {
+        getLine(lineName).stationsList.addFirst(new Station(stationName, Integer.parseInt(time)));
     }
 
     public void removeStationFromLine(String lineName, String stationName) {
