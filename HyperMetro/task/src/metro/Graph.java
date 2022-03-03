@@ -18,7 +18,7 @@ public class Graph {
                 adj.put(station, metro.getNeighbors(station, line))));
     }
 
-    public List<Station> bfsOfGraph(String fromLine, String startStation, String toLine, String endStation) {
+    public void bfsOfGraph(String fromLine, String startStation, String toLine, String endStation) {
         createAdj();
         linesChanged = metro.getLine(fromLine) != metro.getLine(toLine);
         Station start = metro.getLine(fromLine).getStation(startStation);
@@ -43,7 +43,8 @@ public class Graph {
                 }
             }
         }
-        return generateRoute(start, end, parentSt);
+        List<Station> route = generateRoute(start, end, parentSt);
+        printRoute(route);
     }
 
     public List<Station> generateRoute(Station start, Station end, Map<Station, Station> parentSt) {
@@ -56,8 +57,60 @@ public class Graph {
         }
         route.add(searchKey);
         Collections.reverse(route);
-        printRoute(route);
         return route;
+    }
+
+    public void dijkstra(String fromLine, String startStation, String toLine, String endStation) {
+        createAdj();
+        PriorityQueue<Map.Entry<Station, Integer>> pq =
+                new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
+        List<Station> visited = new ArrayList<>();
+        Station start = metro.getLine(fromLine).getStation(startStation);
+        Station end = metro.getLine(toLine).getStation(endStation);
+        Map<Station, Integer> shortestTimeToStart = new HashMap<>();
+        Map<Station, Station> parentStat = new HashMap<>();
+
+        // set all distances to infinity (here int MAX_VALUE)
+        adj.keySet().forEach(station -> shortestTimeToStart.put(station, Integer.MAX_VALUE));
+        // set
+        shortestTimeToStart.put(start, 0);
+        pq.offer(new AbstractMap.SimpleEntry<>(start, 0));
+        visited.add(start);
+        while (!pq.isEmpty()) {
+            Station p = pq.poll().getKey();
+            if (p == end) break;
+            List<Station> neighbours = adj.get(p);
+            for (Station n : neighbours) {
+                if (!visited.contains(n)) {
+                    visited.add(n);
+                    int currentTime = shortestTimeToStart.get(p) + n.getTime();
+                    // for p calculate the shortest time of each neighbor to start station
+                    if (currentTime < shortestTimeToStart.get(n)) {
+                        shortestTimeToStart.put(n, currentTime);
+                        parentStat.put(n, p);
+                        pq.offer(new AbstractMap.SimpleEntry<>(n, currentTime));
+                    }
+                }
+            }
+        }
+        List<Station> fastestRoute = generateRoute(start, end, parentStat);
+        printRoute(fastestRoute, shortestTimeToStart.get(end));
+    }
+
+    public void printRoute(List<Station> route, Integer time) {
+        time -= 4;
+        int TRANSFER_TIME = 5;
+        if (route != null) {
+            for (Station s : route) {
+                System.out.println(s.getName());
+                if (linesChanged && s.hasTransfer()) {
+                    System.out.println("Transition to line " + s.getTransfer().get(0).getLine());
+                    System.out.println(s.getName());
+                    time += TRANSFER_TIME;
+                }
+            }
+            System.out.println("Total: " + time + " minutes in the way");
+        }
     }
 
     public void printRoute(List<Station> route) {

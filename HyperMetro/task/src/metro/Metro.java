@@ -52,9 +52,14 @@ class Station {
         return name;
     }
 
+    public Integer getTime() {
+        return time;
+    }
+
     public List<Transfer> getTransfer() {
         return transfer;
     }
+
 
     public boolean hasTransfer() {
         return transfer.size() != 0;
@@ -173,9 +178,15 @@ public class Metro {
     public void addStationToLine(String lineName, String stationName, String time) {
         getLine(lineName).stationsList.addLast(new Station(stationName, Integer.parseInt(time)));
     }
+    public void addStationToLine(String lineName, String stationName) {
+        getLine(lineName).stationsList.addLast(new Station(stationName, 0));
+    }
 
     public void addStationToLineHead(String lineName, String stationName, String time) {
         getLine(lineName).stationsList.addFirst(new Station(stationName, Integer.parseInt(time)));
+    }
+    public void addStationToLineHead(String lineName, String stationName) {
+        getLine(lineName).stationsList.addFirst(new Station(stationName, 0));
     }
 
     public void removeStationFromLine(String lineName, String stationName) {
@@ -191,6 +202,11 @@ public class Metro {
     public void route(String fromLine, String startStation, String toLine, String endStation) {
         Graph graph = new Graph(this);
         graph.bfsOfGraph(fromLine, startStation, toLine, endStation);
+    }
+
+    public void fastestRoute(String fromLine, String startStation, String toLine, String endStation) {
+        Graph graph = new Graph(this);
+        graph.dijkstra(fromLine, startStation, toLine, endStation);
     }
 
     public void printLine(String lineName) {
