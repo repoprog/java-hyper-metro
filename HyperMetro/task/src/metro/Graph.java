@@ -7,6 +7,7 @@ public class Graph {
     private List<Line> lineList = Metro.getLinesList();
     private boolean linesChanged;
     private Map<Station, List<Station>> adj;
+    private Map<Station, Map<Station, Integer>> adjDks;
 
     public Graph(Metro metro) {
         this.metro = metro;
@@ -16,6 +17,13 @@ public class Graph {
         adj = new HashMap<>();
         lineList.forEach(line -> line.getStationsList().forEach(station ->
                 adj.put(station, metro.getNeighbors(station, line))));
+    }
+
+    public void createAdjDijkstra() {
+        adjDks = new HashMap<>();
+        lineList.forEach(line -> line.getStationsList().forEach(station ->
+                adjDks.put(station, metro.getNeighborsDijkstra(station, line))));
+
     }
 
     public void bfsOfGraph(String fromLine, String startStation, String toLine, String endStation) {
@@ -61,32 +69,34 @@ public class Graph {
     }
 
     public void dijkstra(String fromLine, String startStation, String toLine, String endStation) {
-        createAdj();
+        int TRANSFER_TIME = 5;
+        createAdjDijkstra();
         PriorityQueue<Map.Entry<Station, Integer>> pq =
                 new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
         List<Station> visited = new ArrayList<>();
+        linesChanged = metro.getLine(fromLine) != metro.getLine(toLine);
         Station start = metro.getLine(fromLine).getStation(startStation);
         Station end = metro.getLine(toLine).getStation(endStation);
-        Map<Station, Integer> shortestTimeToStart = new HashMap<>();
+        Map<Station, Integer> timeToStart = new HashMap<>();
         Map<Station, Station> parentStat = new HashMap<>();
 
         // set all distances to infinity (here int MAX_VALUE)
-        adj.keySet().forEach(station -> shortestTimeToStart.put(station, Integer.MAX_VALUE));
+        adjDks.keySet().forEach(station -> timeToStart.put(station, Integer.MAX_VALUE));
         // set
-        shortestTimeToStart.put(start, 0);
+        timeToStart.put(start, 0);
         pq.offer(new AbstractMap.SimpleEntry<>(start, 0));
         visited.add(start);
         while (!pq.isEmpty()) {
             Station p = pq.poll().getKey();
             if (p == end) break;
-            List<Station> neighbours = adj.get(p);
-            for (Station n : neighbours) {
+            Map<Station, Integer> neighbours = adjDks.get(p);
+            for (Station n : neighbours.keySet()) {
                 if (!visited.contains(n)) {
                     visited.add(n);
-                    int currentTime = shortestTimeToStart.get(p) + n.getTime();
+                    int currentTime = timeToStart.get(p) + neighbours.get(n);
                     // for p calculate the shortest time of each neighbor to start station
-                    if (currentTime < shortestTimeToStart.get(n)) {
-                        shortestTimeToStart.put(n, currentTime);
+                    if (currentTime < timeToStart.get(n)) {
+                        timeToStart.put(n, currentTime);
                         parentStat.put(n, p);
                         pq.offer(new AbstractMap.SimpleEntry<>(n, currentTime));
                     }
@@ -94,19 +104,15 @@ public class Graph {
             }
         }
         List<Station> fastestRoute = generateRoute(start, end, parentStat);
-        printRoute(fastestRoute, shortestTimeToStart.get(end));
+        printRoute(fastestRoute, timeToStart.get(end));
     }
 
     public void printRoute(List<Station> route, Integer time) {
-        time -= 4;
-        int TRANSFER_TIME = 5;
         if (route != null) {
             for (Station s : route) {
                 System.out.println(s.getName());
-                if (linesChanged && s.hasTransfer()) {
+                if (s.hasTransfer() && wasTransferred(s, route)) {
                     System.out.println("Transition to line " + s.getTransfer().get(0).getLine());
-                    System.out.println(s.getName());
-                    time += TRANSFER_TIME;
                 }
             }
             System.out.println("Total: " + time + " minutes in the way");
@@ -123,5 +129,11 @@ public class Graph {
                 }
             }
         }
+    }
+
+    public boolean wasTransferred(Station station, List<Station> route) {
+        int index = route.indexOf(station);
+        Station nexStation = route.get(index + 1);
+        return station.getName().equals(nexStation.getName());
     }
 }

@@ -140,6 +140,31 @@ public class Metro {
         return neighbors;
     }
 
+    public Map<Station, Integer> getNeighborsDijkstra(Station station, Line line) {
+        int TRANSFER_TIME = 5;
+        Map<Station, Integer> neighbors = new HashMap<>();
+        int index = line.getStationsList().indexOf(station);
+        ListIterator<Station> li = line.getStationsList().listIterator(index);
+        // For Graph if previousSt take previous neighbour time if nextSt take currSt time
+        if (li.hasPrevious()) {
+            Station previous = li.previous();
+            neighbors.put(previous, previous.getTime());
+            li.next(); // move iterator to current
+        }
+        li.next(); // move iterator to next
+        if (li.hasNext()) {
+            neighbors.put(li.next(), station.getTime());
+        }
+        if (station.hasTransfer()) {
+            String transLineName = station.getTransfer().get(0).getLine();
+            String transStationName = station.getTransfer().get(0).getStation();
+            Line transLine = getLine(transLineName);
+            Station transStation = transLine.getStation(transStationName);
+            neighbors.put(transStation, TRANSFER_TIME);
+        }
+        return neighbors;
+    }
+
     public void readStationsFile(String filePath) {
         Type type = new TypeToken<HashMap<String, HashMap<Integer, Station>>>() {
         }.getType();
@@ -178,6 +203,7 @@ public class Metro {
     public void addStationToLine(String lineName, String stationName, String time) {
         getLine(lineName).stationsList.addLast(new Station(stationName, Integer.parseInt(time)));
     }
+
     public void addStationToLine(String lineName, String stationName) {
         getLine(lineName).stationsList.addLast(new Station(stationName, 0));
     }
@@ -185,6 +211,7 @@ public class Metro {
     public void addStationToLineHead(String lineName, String stationName, String time) {
         getLine(lineName).stationsList.addFirst(new Station(stationName, Integer.parseInt(time)));
     }
+
     public void addStationToLineHead(String lineName, String stationName) {
         getLine(lineName).stationsList.addFirst(new Station(stationName, 0));
     }
